@@ -1,9 +1,13 @@
 import PropTypes from 'prop-types'
 
-function Slot({ turn }) {
+function Slot({ columnIndex, turn, updateBoard }) {
+
+    const handleClick = () => {
+        updateBoard(columnIndex)
+    }
 
     return(
-        <article className='slot'>
+        <article className='slot' onClick={handleClick}>
             <div className='slot-circle' style={{backgroundColor: turn}}>
                 
             </div>
@@ -12,8 +16,10 @@ function Slot({ turn }) {
 }
 
 Slot.propTypes = {
-    index: PropTypes.number,
-    turn: PropTypes.string
+    rowIndex: PropTypes.number,
+    columnIndex: PropTypes.number,
+    turn: PropTypes.string,
+    updateBoard: PropTypes.func
 }
 
 export default Slot

@@ -5,7 +5,7 @@ function App() {
 
   return (
     <>
-      <Board columnsQuantity={7} />
+      <Board rowsQuantity={6} columnsQuantity={7} />
     </>
   )
 }
