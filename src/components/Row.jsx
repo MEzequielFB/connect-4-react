@@ -1,15 +1,10 @@
-import { useState } from "react"
 import PropTypes from 'prop-types'
-import ColumnB from "./ColumnB"
 import Slot from "./Slot"
 
 function Row({ index, row, updateBoard }) {
-    /* const columns = Array(columnsQuantity).fill(null) */
-
     return(
         <>
             {
-                /* columns.map((_, columIndex) => ( */
                 row.columns.map((column, columnIndex) => (
                     <Slot
                         key={index + '' + columnIndex}
@@ -18,13 +13,6 @@ function Row({ index, row, updateBoard }) {
                         updateBoard={updateBoard}
                     />
                 ))
-                /* <ColumnB
-                        key={index + '' + columIndex}
-                        index={columIndex}
-                        turn={board[index][columIndex]}
-                        rowsQuantity={rowsQuantity}
-                        updateBoard={updateBoard}
-                /> */
             }
         </>
     )

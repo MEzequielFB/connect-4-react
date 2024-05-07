@@ -1,11 +1,22 @@
+html {
+  position: relative;
+  height: 100vh;
+}
+.title {
+  width: fit-content;
+  margin: auto;
+}
 .board {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   width: 500px;
-  margin: 10rem auto;
   border-radius: 10px;
   background-color: black;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .column {
   border-radius: 10px;
@@ -30,4 +41,49 @@
   background-color: black;
   border: 2px solid rgba(255, 255, 255, 0.87);
   border-radius: 50%;
+}
+.transparent-background {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.863);
+}
+.winner-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 500px;
+  padding: 1rem;
+  border: 2px solid white;
+  border-radius: 10px;
+  background-color: black;
+  transform: translate(-50%, -50%);
+}
+.winner-modal .slot-circle {
+  margin: 1rem 0 2rem 0;
+}
+.winner-modal.hidden, .transparent-background.hidden {
+  display: none;
+}
+button {
+  padding: 0.5rem;
+  color: white;
+  background-color: black;
+  border: 2px solid white;
+  border-radius: 10px;
+  transition: 0.5s;
+  cursor: pointer;
+}
+button:hover {
+  color: black;
+  background-color: white;
+}
+.resetBtn {
+  display: block;
+  width: fit-content;
+  margin: 1rem auto;
 }

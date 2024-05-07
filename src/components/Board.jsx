@@ -1,24 +1,30 @@
 import { useState } from "react"
+import useSound from 'use-sound'
 import PropTypes from 'prop-types'
 import { COLORS } from "../constants/constants"
-import Column from "./Column"
-import Slot from "./Slot"
 import Row from "./Row"
 import WinnerModal from "./WinnerModal"
+import applauseSfx from '../sounds/applause.mp3'
 
 function Board({ rowsQuantity, columnsQuantity }) {
-    /* const columns = Array(columnsQuantity).fill(null) */
     const initialBoard = {
         rows: Array.from({ length: rowsQuantity }, () => ({
           columns: Array.from({ length: columnsQuantity }, () => ({ turn: null })),
         })),
     };
-    /* const [board, setBoard] = useState(Array(rowsQuantity).fill(Array(columnsQuantity).fill(null))) */
     const [board, setBoard] = useState(initialBoard)
     const [turn, setTurn] = useState(COLORS.player1)
     const [isWinner, setIsWinner] = useState(false)
 
+    const [playApplause] = useSound(applauseSfx)
+
     console.log(board)
+
+    const resetGame = () => {
+        setBoard(initialBoard)
+        setTurn(COLORS.player1)
+        setIsWinner(false)
+    }
 
     const updateBoard = (columnIndex) => {
         if (isWinner) return
@@ -36,6 +42,7 @@ function Board({ rowsQuantity, columnsQuantity }) {
         if (checkWinner(rowIndex, columnIndex)) {
             setIsWinner(true)
             console.log(turn + ' WON')
+            playApplause()
             return
         }
 
@@ -56,37 +63,20 @@ function Board({ rowsQuantity, columnsQuantity }) {
         let consecutiveSlots = 1
 
         // Go up
-        /* let i = rowIndex-1
+        let i = rowIndex-1
         while (i >= 0 && board.rows[i].columns[columnIndex].turn === turn) {
             consecutiveSlots++
             i--
-        } */
+        }
 
         // Go down
-       /*  i = rowIndex+1
-        while (i < board.rows[rowIndex].length && board.rows[i].columns[columnIndex].turn === turn) {
+        i = rowIndex+1
+        while (i < board.rows.length && board.rows[i].columns[columnIndex].turn === turn) {
             consecutiveSlots++
             i++
-        } */
-
-        // Go up
-        for (let i = rowIndex-1; i >= 0; i--) {
-            if (board.rows[i].columns[columnIndex].turn === turn) {
-                consecutiveSlots++
-            } else {
-                break
-            }
         }
 
-        // Go down
-        for (let i = rowIndex+1; i < board.rows.length; i++) {
-            if (board.rows[i].columns[columnIndex].turn === turn) {
-                consecutiveSlots++
-            } else {
-                break
-            }
-        }
-
+        console.log('Vertical ', consecutiveSlots)
         return consecutiveSlots >= 4 ? true : false
     }
 
@@ -107,19 +97,6 @@ function Board({ rowsQuantity, columnsQuantity }) {
             i++
         }
 
-        /* for (let i = columnIndex-1; i >= 0; i--) {
-            if (board.rows[rowIndex].columns[i].turn === turn) {
-                consecutiveSlots++
-            }
-        } */
-
-        // Go right
-        /* for (let i = columnIndex+1; i < board.rows[rowIndex].columns.length; i++) {
-            if (board.rows[rowIndex].columns[i].turn === turn) {
-                consecutiveSlots++
-            }
-        } */
-
         console.log('Horizontal ', consecutiveSlots)
         return consecutiveSlots >= 4 ? true : false
     }
@@ -129,20 +106,16 @@ function Board({ rowsQuantity, columnsQuantity }) {
 
         let row = rowIndex-1
         let column = columIndex-1
-        while (row >= 0 && column >= 0) {
-            if (board.rows[row].columns[column].turn === turn) {
-                consecutiveSlots++
-            }
+        while (row >= 0 && column >= 0 && board.rows[row].columns[column].turn === turn) {
+            consecutiveSlots++
             row--
             column--
         }
 
         row = rowIndex+1
         column = columIndex+1
-        while (row < board.rows.length && column < board.rows[rowIndex].length) {
-            if (board.rows[row].columns[column].turn === turn) {
-                consecutiveSlots++
-            }
+        while (row < board.rows.length && column < board.rows[rowIndex].columns.length && board.rows[row].columns[column].turn === turn) {
+            consecutiveSlots++
             row++
             column++
         }
@@ -156,20 +129,16 @@ function Board({ rowsQuantity, columnsQuantity }) {
 
         let row = rowIndex+1
         let column = columIndex-1
-        while (row < board.rows.length && column >= 0) {
-            if (board.rows[row].columns[column].turn === turn) {
-                consecutiveSlots++
-            }
+        while (row < board.rows.length && column >= 0 && board.rows[row].columns[column].turn === turn) {
+            consecutiveSlots++
             row++
             column--
         }
 
         row = rowIndex-1
         column = columIndex+1
-        while (row >= 0 && column < board.rows[rowIndex].length) {
-            if (board.rows[row].columns[column].turn === turn) {
-                consecutiveSlots++
-            }
+        while (row >= 0 && column < board.rows[rowIndex].length && board.rows[row].columns[column].turn === turn) {
+            consecutiveSlots++
             row--
             column++
         }
@@ -190,13 +159,10 @@ function Board({ rowsQuantity, columnsQuantity }) {
         return positionToFill
     }
 
-    /* const switchTurns = () => {
-        const newTurn = turn === COLORS.player1 ? COLORS.player2 : COLORS.player1
-        setTurn(newTurn)
-    } */
-
     return(
         <>
+            <h1 className="title">Connect 4</h1>
+            <button className="resetBtn" onClick={resetGame}>Reset game</button>
             <section className="board">
                 {
                     board.rows.map((row, rowIndex) => (
@@ -208,31 +174,10 @@ function Board({ rowsQuantity, columnsQuantity }) {
                         />
                     ))
                 }
-                {/* {
-                    board.map((row, rowIndex) => (
-                        row.map((column, columnIndex) => (
-                            <Slot
-                                key={rowIndex + '' + columnIndex}
-                                columnIndex={columnIndex}
-                                turn={board[rowIndex][columnIndex]}
-                                updateBoard={updateBoard}
-                            />
-                        ))
-                    ))
-                } */}
             </section>
 
-            <WinnerModal isWinner={isWinner} />
+            <WinnerModal isWinner={isWinner} winner={turn} resetGame={resetGame} />
         </>
-            /* {
-                columns.map((_, index) => (
-                    <Column
-                        key={index}
-                        turn={turn}
-                        switchTurns={switchTurns}
-                    />
-                ))
-            } */
     )
 }
 
