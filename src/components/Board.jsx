@@ -5,6 +5,7 @@ import { COLORS } from "../constants/constants"
 import Row from "./Row"
 import WinnerModal from "./WinnerModal"
 import applauseSfx from '../sounds/applause.mp3'
+import { checkWinner } from "../gameChecks/checks"
 
 function Board({ rowsQuantity, columnsQuantity }) {
     const initialBoard = {
@@ -39,7 +40,7 @@ function Board({ rowsQuantity, columnsQuantity }) {
         
         console.log('row | column ', rowIndex + ' | ' + columnIndex)
 
-        if (checkWinner(rowIndex, columnIndex)) {
+        if (checkWinner(rowIndex, columnIndex, board, turn)) {
             setIsWinner(true)
             console.log(turn + ' WON')
             playApplause()
@@ -48,103 +49,6 @@ function Board({ rowsQuantity, columnsQuantity }) {
 
         const newTurn = turn === COLORS.player1 ? COLORS.player2 : COLORS.player1
         setTurn(newTurn)
-    }
-
-    const checkWinner = (rowIndex, columnIndex) => {
-        if (checkVertical(rowIndex, columnIndex)) return true
-        if (checkHorizontal(rowIndex, columnIndex)) return true
-        if (checkDiagonalLeft(rowIndex, columnIndex)) return true
-        if (checkDiagonalRight(rowIndex, columnIndex)) return true
-
-        return false
-    }
-
-    const checkVertical = (rowIndex, columnIndex) => {
-        let consecutiveSlots = 1
-
-        // Go up
-        let i = rowIndex-1
-        while (i >= 0 && board.rows[i].columns[columnIndex].turn === turn) {
-            consecutiveSlots++
-            i--
-        }
-
-        // Go down
-        i = rowIndex+1
-        while (i < board.rows.length && board.rows[i].columns[columnIndex].turn === turn) {
-            consecutiveSlots++
-            i++
-        }
-
-        console.log('Vertical ', consecutiveSlots)
-        return consecutiveSlots >= 4 ? true : false
-    }
-
-    const checkHorizontal = (rowIndex, columnIndex) => {
-        let consecutiveSlots = 1
-
-        // Go left
-        let i = columnIndex-1
-        while (i >= 0 && board.rows[rowIndex].columns[i].turn === turn) {
-            consecutiveSlots++
-            i--
-        }
-
-        // Go right
-        i = columnIndex+1
-        while (i < board.rows[rowIndex].columns.length && board.rows[rowIndex].columns[i].turn === turn) {
-            consecutiveSlots++
-            i++
-        }
-
-        console.log('Horizontal ', consecutiveSlots)
-        return consecutiveSlots >= 4 ? true : false
-    }
-
-    const checkDiagonalLeft = (rowIndex, columIndex) => {
-        let consecutiveSlots = 1
-
-        let row = rowIndex-1
-        let column = columIndex-1
-        while (row >= 0 && column >= 0 && board.rows[row].columns[column].turn === turn) {
-            consecutiveSlots++
-            row--
-            column--
-        }
-
-        row = rowIndex+1
-        column = columIndex+1
-        while (row < board.rows.length && column < board.rows[rowIndex].columns.length && board.rows[row].columns[column].turn === turn) {
-            consecutiveSlots++
-            row++
-            column++
-        }
-
-        console.log('Diagonal Left ', consecutiveSlots)
-        return consecutiveSlots >= 4 ? true : false
-    }
-
-    const checkDiagonalRight = (rowIndex, columIndex) => {
-        let consecutiveSlots = 1
-
-        let row = rowIndex+1
-        let column = columIndex-1
-        while (row < board.rows.length && column >= 0 && board.rows[row].columns[column].turn === turn) {
-            consecutiveSlots++
-            row++
-            column--
-        }
-
-        row = rowIndex-1
-        column = columIndex+1
-        while (row >= 0 && column < board.rows[rowIndex].length && board.rows[row].columns[column].turn === turn) {
-            consecutiveSlots++
-            row--
-            column++
-        }
-
-        console.log('Diagonal Right ', consecutiveSlots)
-        return consecutiveSlots >= 4 ? true : false
     }
 
     const getRowPositionToFill = (columnIndex) => {
