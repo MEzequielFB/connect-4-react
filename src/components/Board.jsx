@@ -1,11 +1,12 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import useSound from 'use-sound'
 import PropTypes from 'prop-types'
 import { COLORS } from "../constants/constants"
 import Row from "./Row"
 import WinnerModal from "./WinnerModal"
 import applauseSfx from '../sounds/applause.mp3'
-import { checkWinner } from "../gameChecks/checks"
+import crowdSfx from '../sounds/crowd.mp3'
+import { checkDraw, checkWinner } from "../gameChecks/checks"
 
 function Board({ rowsQuantity, columnsQuantity }) {
     const initialBoard = {
@@ -17,7 +18,10 @@ function Board({ rowsQuantity, columnsQuantity }) {
     const [turn, setTurn] = useState(COLORS.player1)
     const [isWinner, setIsWinner] = useState(false)
 
+    const filledSlotsQuantity = useRef(0)
+
     const [playApplause] = useSound(applauseSfx)
+    const [playCrowd] = useSound(crowdSfx)
 
     console.log(board)
 
@@ -25,10 +29,11 @@ function Board({ rowsQuantity, columnsQuantity }) {
         setBoard(initialBoard)
         setTurn(COLORS.player1)
         setIsWinner(false)
+        filledSlotsQuantity.current = 0
     }
 
     const updateBoard = (columnIndex) => {
-        if (isWinner) return
+        if (isWinner || isWinner === null) return
 
         const rowIndex = getRowPositionToFill(columnIndex)
         
@@ -37,13 +42,23 @@ function Board({ rowsQuantity, columnsQuantity }) {
         const newBoard = board
         newBoard.rows[rowIndex].columns[columnIndex].turn = turn
         setBoard(newBoard)
+
+        filledSlotsQuantity.current++
         
         console.log('row | column ', rowIndex + ' | ' + columnIndex)
 
-        if (checkWinner(rowIndex, columnIndex, board, turn)) {
+        if (checkWinner({ rowIndex, columnIndex, board, turn, filledSlotsQuantity })) {
             setIsWinner(true)
             console.log(turn + ' WON')
             playApplause()
+            return
+        }
+
+        if (checkDraw({ board: newBoard, filledSlotsQuantity: filledSlotsQuantity.current })) {
+            setIsWinner(null)
+            setTurn('black')
+            console.log('DRAW')
+            playCrowd()
             return
         }
 

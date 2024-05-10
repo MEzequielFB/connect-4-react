@@ -1,10 +1,15 @@
-export const checkWinner = (rowIndex, columnIndex, board, turn) => {
+export const checkWinner = ({ rowIndex, columnIndex, board, turn }) => {
     if (checkVertical(rowIndex, columnIndex, board, turn)) return true
     if (checkHorizontal(rowIndex, columnIndex, board, turn)) return true
     if (checkDiagonalLeft(rowIndex, columnIndex, board, turn)) return true
     if (checkDiagonalRight(rowIndex, columnIndex, board, turn)) return true
 
     return false
+}
+
+export const checkDraw = ({ board, filledSlotsQuantity }) => {
+    const slotsQuantity = board.rows.length * board.rows[0].columns.length
+    return filledSlotsQuantity === slotsQuantity
 }
 
 const checkVertical = (rowIndex, columnIndex, board, turn) => {

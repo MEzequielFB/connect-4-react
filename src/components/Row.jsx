@@ -21,9 +21,6 @@ function Row({ index, row, updateBoard }) {
 Row.propTypes = {
     index: PropTypes.number,
     row: PropTypes.object,
-    board: PropTypes.object,
-    rowsQuantity: PropTypes.number,
-    columnsQuantity: PropTypes.number,
     updateBoard: PropTypes.func
 }
 
