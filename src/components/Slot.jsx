@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import Circle from './Circle'
 
 function Slot({ column, columnIndex, updateBoard }) {
 
@@ -8,9 +9,7 @@ function Slot({ column, columnIndex, updateBoard }) {
 
     return(
         <article className='slot' onClick={handleClick}>
-            <div className='slot-circle' style={{backgroundColor: column.turn}}>
-                
-            </div>
+            <Circle color={column.turn} />
         </article>
     )
 }

@@ -7,6 +7,8 @@ import WinnerModal from "./WinnerModal"
 import applauseSfx from '../sounds/applause.mp3'
 import crowdSfx from '../sounds/crowd.mp3'
 import { checkDraw, checkWinner } from "../gameChecks/checks"
+import Player from "./Player"
+import Circle from "./Circle"
 
 function Board({ rowsQuantity, columnsQuantity }) {
     const initialBoard = {
@@ -82,18 +84,28 @@ function Board({ rowsQuantity, columnsQuantity }) {
         <>
             <h1 className="title">Connect 4</h1>
             <button className="resetBtn" onClick={resetGame}>Reset game</button>
-            <section className="board">
-                {
-                    board.rows.map((row, rowIndex) => (
-                        <Row
-                            key={rowIndex}
-                            index={rowIndex}
-                            row={row}
-                            updateBoard={updateBoard}
-                        />
-                    ))
-                }
-            </section>
+
+            <div className="game">
+                <Player name={'Player 1'} color={COLORS.player1} />
+
+                <div className="actualTurn-board">
+                    <Circle color={turn} />
+                    <section className="board">
+                        {
+                            board.rows.map((row, rowIndex) => (
+                                <Row
+                                    key={rowIndex}
+                                    index={rowIndex}
+                                    row={row}
+                                    updateBoard={updateBoard}
+                                />
+                            ))
+                        }
+                    </section>
+                </div>
+
+                <Player name={'Player 2'} color={COLORS.player2} />
+            </div>
 
             <WinnerModal isWinner={isWinner} winner={turn} resetGame={resetGame} />
         </>
