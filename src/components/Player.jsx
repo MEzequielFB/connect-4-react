@@ -4,7 +4,7 @@ import Circle from "./Circle"
 function Player({ name, color }) {
     return (
         <aside className='player'>
-            <h1>{name}</h1>
+            <h2>{name}</h2>
             <Circle color={color} />
         </aside>
     )
